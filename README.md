@@ -1,5 +1,7 @@
 # 1ClickTech — Premium Website
 
+**🌐 Live site: https://awtra.github.io/1clicktech-website/**
+
 A modern, interactive storefront for 1ClickTech (enterprise IT hardware — HP/HPE servers, switches, printers, drives, networking). Built to feel premium while staying true to the existing brand: same navy/steel/terracotta palette, same products, same promises.
 
 **The headline feature:** the product catalog is powered by a **Google Sheet** the team edits directly. Add/edit/remove a row and the site updates automatically every 5 minutes — no developer, no code, no redeploy.
