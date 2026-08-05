@@ -267,13 +267,15 @@
     badge.textContent = count;
     badge.classList.toggle("show", count > 0);
 
+    // Never wipe #cartEmpty with innerHTML="" — remove only the item rows,
+    // or every updateCart after the first add crashes on a null #cartEmpty.
     const body = $("#cartBody"), foot = $("#cartFoot"), empty = $("#cartEmpty");
+    $$(".cart-item", body).forEach(r => r.remove());
     if (count === 0) {
-      body.innerHTML = ""; body.appendChild(empty); empty.style.display = "";
+      empty.style.display = "";
       foot.hidden = true;
     } else {
       empty.style.display = "none";
-      body.innerHTML = "";
       cart.forEach((e, id) => {
         const p = e.product, up = unitPrice(p);
         const row = document.createElement("div");
@@ -307,8 +309,30 @@
     if (openDrawer) openCart();
   }
 
-  function openCart() { $("#cartDrawer").classList.add("open"); $("#drawerScrim").classList.add("open"); $("#cartDrawer").setAttribute("aria-hidden", "false"); }
-  function closeCart() { $("#cartDrawer").classList.remove("open"); $("#drawerScrim").classList.remove("open"); $("#cartDrawer").setAttribute("aria-hidden", "true"); }
+  // Scrim + scroll-lock are shared by the cart drawer and the mobile menu.
+  function syncOverlay() {
+    const anyOpen = $("#cartDrawer").classList.contains("open") || $("#navLinks").classList.contains("open");
+    $("#drawerScrim").classList.toggle("open", anyOpen);
+    document.body.classList.toggle("no-scroll", anyOpen);
+  }
+  function openCart() { closeMenu(); $("#cartDrawer").classList.add("open"); $("#cartDrawer").setAttribute("aria-hidden", "false"); syncOverlay(); }
+  function closeCart() { $("#cartDrawer").classList.remove("open"); $("#cartDrawer").setAttribute("aria-hidden", "true"); syncOverlay(); }
+
+  function openMenu() {
+    $("#hamburger").classList.add("open");
+    $("#hamburger").setAttribute("aria-expanded", "true");
+    $("#navLinks").classList.add("open");
+    $("#nav").classList.add("menu-open");   // lifts the header above the scrim
+    syncOverlay();
+  }
+  function closeMenu() {
+    $("#hamburger").classList.remove("open");
+    $("#hamburger").setAttribute("aria-expanded", "false");
+    $("#navLinks").classList.remove("open");
+    // keep the header above the scrim until the slide-out transition ends
+    setTimeout(() => { if (!$("#navLinks").classList.contains("open")) $("#nav").classList.remove("menu-open"); }, 400);
+    syncOverlay();
+  }
 
   /* =========================================================
      4) TOAST
@@ -342,15 +366,17 @@
 
     // mobile menu
     const burger = $("#hamburger"), links = $("#navLinks");
-    burger.addEventListener("click", () => { burger.classList.toggle("open"); links.classList.toggle("open"); });
-    $$("#navLinks a").forEach(a => a.addEventListener("click", () => { burger.classList.remove("open"); links.classList.remove("open"); }));
+    burger.addEventListener("click", () => links.classList.contains("open") ? closeMenu() : openMenu());
+    $$("#navLinks a").forEach(a => a.addEventListener("click", closeMenu));
+    // if the viewport grows past the mobile breakpoint with the menu open, reset it
+    matchMedia("(min-width: 961px)").addEventListener("change", e => { if (e.matches) closeMenu(); });
 
     // cart open/close
     $("#cartToggle").addEventListener("click", openCart);
     $("#cartClose").addEventListener("click", closeCart);
-    $("#drawerScrim").addEventListener("click", closeCart);
+    $("#drawerScrim").addEventListener("click", () => { closeCart(); closeMenu(); });
     $("#cartShopBtn").addEventListener("click", closeCart);
-    document.addEventListener("keydown", e => { if (e.key === "Escape") closeCart(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") { closeCart(); closeMenu(); } });
 
     // search
     const doSearch = v => { searchTerm = v; renderProducts(); };
