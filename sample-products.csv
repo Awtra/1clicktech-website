@@ -1,13 +1,14 @@
 name,price,sale_price,image,category,badge
-"HP MicroServer Gen10 Plus — Xeon E-2224, 32GB RAM, 4TB SSD, Windows Server 2019",1499,989,assets/microserver-gen10.jpg,Servers,Bestseller
-"HP ProLiant ML30 Gen10 Business Server — Xeon 4-Core 3.5GHz, 64GB DDR4, 8TB SSD, RAID",2199,1749,assets/proliant-ml30.jpg,Servers,Sale
-"HP Z440 Tower Workstation — Xeon E5-2609 V3, 64GB DDR4, 2TB SSD, Win 10 Pro (Renewed)",1299,899,assets/z440-tower.jpg,Servers,Renewed
-"HP J9773A 2530-24G-PoE+ Switch — 24 Ports, Managed, Rack-Mountable",749,519,assets/switch-j9773a.jpg,Networking,Sale
-"HP ProCurve J9772A 2530-48G-PoE+ Switch — 48 Ports Gigabit Managed",1099,799,assets/switch-j9772a.jpg,Networking,Sale
-"HP J9776A 2530-24G — 24-Port Gigabit Switch",449,299,assets/switch-j9776a.jpg,Networking,Sale
-"HP LaserJet 5200TN Monochrome Printer (Renewed)",599,389,assets/laserjet-5200.jpg,Printers,Renewed
-"HP Instant Ink Business $20 Prepaid Enrollment Card (3YN94AN)",25,20,assets/ink-card.jpg,Software,Sale
-"HP 2TB SATA 3.0 3.5"" Internal Hard Drive (AW556A)",189,129,assets/hdd-2tb.jpg,Hard Drives,Sale
-"HPE 1.2TB 12GB 10K SAS SFF Enterprise Hard Disk Drive",249,179,assets/hdd-sas.jpg,Hard Drives,Sale
-"HPE 2920 1.0M Switch Stacking Cable",89,59,assets/stacking-cable.jpg,Cables,Sale
-"HP 628059-B21 — 3TB 3.5"" SATA 7.2K 6Gb/s Midline Hard Drive",279,199,assets/server-generic.jpg,Hard Drives,Sale
+"Networking Starter Kit — Wi-Fi Router, 24-Port Switch & Cat6 Cable",349,279,assets/products/networking-kit.jpg,Networking,Bestseller
+"Enterprise Tower Server — Multi-Bay Storage, LED Status, Rack Ready",1899,1599,assets/products/tower-server.jpg,Servers,Featured
+"Business Chromebook — Chrome OS, Full Keyboard & Trackpad",549,449,assets/products/chromebook.jpg,Computing,Sale
+"Storage Bundle — 4-Bay NAS + SSD + 4TB SATA Drive",799,649,assets/products/storage-bundle.jpg,Storage,Featured
+"Yealink IP Desk Phone — Color LCD, HD Voice Handset",189,149,assets/products/ip-phone.jpg,IP Phones,Sale
+"Epson Flatbed Scanner — Open Lid, High-Resolution Platen",229,189,assets/products/scanner.jpg,Printers,Sale
+"Brother Color Multifunction Printer — Touchscreen, ADF",449,379,assets/products/mfp-printer.jpg,Printers,Featured
+"Epson 3LCD Projector — Bright Lens, Adjustable Focus",599,499,assets/products/projector.jpg,Projectors,Sale
+"Gigabyte GeForce RTX Graphics Card — Triple-Fan Cooling",899,749,assets/products/gpu.jpg,Computing,Featured
+"Epson Thermal Receipt Printer — POS, Top-Exit Paper",299,249,assets/products/receipt-printer.jpg,Printers,Sale
+"Laptop Accessory Bundle — Bag, Mouse, USB-C Hub, Stand & Cooler",159,129,assets/products/laptop-accessories.jpg,Accessories,Bestseller
+"Bullet IP Security Camera — IR Night Vision, Wall Mount",139,109,assets/products/ip-camera.jpg,Security,Sale
+"Compact Thermal Receipt Printer — 80mm POS, LED Indicators",179,149,assets/products/thermal-printer.jpg,Printers,Sale
