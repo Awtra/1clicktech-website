@@ -47,18 +47,18 @@ window.SITE_CONFIG = {
      These are seeded from the real 1ClickTech catalog.
   --------------------------------------------------------- */
   SAMPLE_PRODUCTS: [
-    { name:"Networking Starter Kit — Wi-Fi Router, 24-Port Switch & Cat6 Cable", price:349, sale_price:279, image:"assets/products/networking-kit.jpg", category:"Networking", badge:"Bestseller" },
-    { name:"Enterprise Tower Server — Multi-Bay Storage, LED Status, Rack Ready", price:1899, sale_price:1599, image:"assets/products/tower-server.jpg", category:"Servers", badge:"Featured" },
-    { name:"Business Chromebook — Chrome OS, Full Keyboard & Trackpad", price:549, sale_price:449, image:"assets/products/chromebook.jpg", category:"Computing", badge:"Sale" },
-    { name:"Storage Bundle — 4-Bay NAS + SSD + 4TB SATA Drive", price:799, sale_price:649, image:"assets/products/storage-bundle.jpg", category:"Storage", badge:"Featured" },
+    { name:"Networking Starter Kit — Wi-Fi Router, 24-Port Switch & Cat6 Cable", price:349, sale_price:279, image:"assets/products/networking-bundle.jpg", category:"Networking", badge:"Bestseller" },
+    { name:"Enterprise Tower Servers — Multi-Bay Storage, LED Status, Rack Ready", price:1899, sale_price:1599, image:"assets/products/tower-servers.jpg", category:"Servers", badge:"Featured" },
+    { name:"Business Chromebook — Chrome OS, Full Keyboard & Trackpad", price:549, sale_price:449, image:"assets/products/chromebook.jpg", category:"Chromebooks", badge:"Sale" },
+    { name:"Storage Bundle — 4-Bay NAS + 4TB SATA Drive + SSD", price:799, sale_price:649, image:"assets/products/storage-bundle.jpg", category:"Storage", badge:"Featured" },
     { name:"Yealink IP Desk Phone — Color LCD, HD Voice Handset", price:189, sale_price:149, image:"assets/products/ip-phone.jpg", category:"IP Phones", badge:"Sale" },
-    { name:"Epson Flatbed Scanner — Open Lid, High-Resolution Platen", price:229, sale_price:189, image:"assets/products/scanner.jpg", category:"Printers", badge:"Sale" },
-    { name:"Brother Color Multifunction Printer — Touchscreen, ADF", price:449, sale_price:379, image:"assets/products/mfp-printer.jpg", category:"Printers", badge:"Featured" },
+    { name:"Epson Flatbed Scanner — Open Lid, High-Resolution Platen", price:229, sale_price:189, image:"assets/products/scanner.jpg", category:"Printers & Scanners", badge:"Sale" },
+    { name:"Brother Color Multifunction Printer — Touchscreen, ADF", price:449, sale_price:379, image:"assets/products/mfp-printer.jpg", category:"Printers & Scanners", badge:"Featured" },
     { name:"Epson 3LCD Projector — Bright Lens, Adjustable Focus", price:599, sale_price:499, image:"assets/products/projector.jpg", category:"Projectors", badge:"Sale" },
-    { name:"Gigabyte GeForce RTX Graphics Card — Triple-Fan Cooling", price:899, sale_price:749, image:"assets/products/gpu.jpg", category:"Computing", badge:"Featured" },
-    { name:"Epson Thermal Receipt Printer — POS, Top-Exit Paper", price:299, sale_price:249, image:"assets/products/receipt-printer.jpg", category:"Printers", badge:"Sale" },
-    { name:"Laptop Accessory Bundle — Bag, Mouse, USB-C Hub, Stand & Cooler", price:159, sale_price:129, image:"assets/products/laptop-accessories.jpg", category:"Accessories", badge:"Bestseller" },
-    { name:"Bullet IP Security Camera — IR Night Vision, Wall Mount", price:139, sale_price:109, image:"assets/products/ip-camera.jpg", category:"Security", badge:"Sale" },
-    { name:"Compact Thermal Receipt Printer — 80mm POS, LED Indicators", price:179, sale_price:149, image:"assets/products/thermal-printer.jpg", category:"Printers", badge:"Sale" }
+    { name:"Gigabyte GeForce RTX Graphics Card — Triple-Fan Cooling", price:899, sale_price:749, image:"assets/products/gpu.jpg", category:"GPU", badge:"Featured" },
+    { name:"Epson Thermal Receipt Printer — POS, Top-Exit Paper", price:299, sale_price:249, image:"assets/products/receipt-printer.jpg", category:"Receipt Printers", badge:"Sale" },
+    { name:"Laptop Accessory Bundle — Bag, Mouse, USB-C Hub, Stand & Cooler", price:159, sale_price:129, image:"assets/products/laptop-accessories.jpg", category:"Laptop Accessories", badge:"Bestseller" },
+    { name:"Bullet IP Security Camera — IR Night Vision, Wall Mount", price:139, sale_price:109, image:"assets/products/ip-camera.jpg", category:"IP Camera", badge:"Sale" },
+    { name:"Compact Thermal Receipt Printer — 80mm POS, LED Indicators", price:179, sale_price:149, image:"assets/products/thermal-printer.jpg", category:"Thermal Printer", badge:"Sale" }
   ]
 };
