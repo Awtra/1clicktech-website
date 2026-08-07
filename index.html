@@ -85,24 +85,6 @@
         <li><strong>Full</strong> warranty</li>
       </ul>
     </div>
-
-    <div class="hero__visual reveal">
-      <div class="tilt" id="heroTilt">
-        <div class="glass-card hero__product">
-          <div class="hero__product-badge">Bestseller</div>
-          <img src="assets/microserver-gen10.jpg" alt="HP MicroServer Gen10 Plus" />
-          <div class="hero__product-info">
-            <span class="chip">Servers</span>
-            <h3>HP MicroServer Gen10 Plus</h3>
-            <p>Xeon E-2224 · 32GB RAM · 4TB SSD</p>
-            <div class="hero__product-price"><span class="was">$1,499</span><span class="now">$989</span></div>
-          </div>
-        </div>
-        <div class="float-stat fs1"><span class="fs__num" data-count="99.9" data-suffix="%">0</span><span class="fs__label">Tested & verified</span></div>
-        <div class="float-stat fs2"><span class="fs__num" data-count="2" data-suffix="–5 days">0</span><span class="fs__label">Avg. delivery</span></div>
-        <div class="float-stat fs3"><span class="live-dot"></span><span class="fs__label">Live inventory sync</span></div>
-      </div>
-    </div>
   </div>
 
   <!-- BRAND MARQUEE -->
@@ -141,7 +123,16 @@
     <div class="section-head reveal">
       <span class="eyebrow eyebrow--center"><span class="live-dot"></span> Live inventory</span>
       <h2 class="section-title">The Catalog, <span class="grad-text">always current</span></h2>
-      <p class="section-sub">Every product below syncs automatically from our inventory sheet — pricing and stock update on their own, every 5 minutes. <span class="sync-status" id="syncStatus">Connecting…</span></p>
+      <p class="section-sub">Start with our featured picks, then filter or browse the full collection. Pricing updates itself from our inventory sheet every 5 minutes. <span class="sync-status" id="syncStatus">Connecting…</span></p>
+    </div>
+
+    <!-- Featured picks: a tight, swipeable strip (JS-populated) -->
+    <div class="featured reveal" id="featuredWrap">
+      <div class="featured__head">
+        <h3>Featured picks</h3>
+        <span class="featured__hint">swipe →</span>
+      </div>
+      <div class="featured-strip" id="featuredStrip" aria-label="Featured products"></div>
     </div>
 
     <div class="catalog__toolbar reveal">
@@ -158,8 +149,12 @@
       </button>
     </div>
 
-    <div class="product-grid" id="productGrid" aria-live="polite">
+    <div class="product-grid is-collapsed" id="productGrid" aria-live="polite">
       <!-- Skeletons injected by JS, then real cards -->
+    </div>
+
+    <div class="catalog__more">
+      <button class="btn btn--ghost" id="showAllBtn" hidden>Show all products ↓</button>
     </div>
 
     <p class="catalog__empty" id="catalogEmpty" hidden>No products match your search. Try a different term or category.</p>

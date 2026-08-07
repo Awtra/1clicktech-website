@@ -13,6 +13,7 @@
   let PRODUCTS = [];
   let activeCat = "all";
   let searchTerm = "";
+  let showAll = false;              // grid collapsed until expanded
   const cart = new Map();           // key -> {product, qty}
   const wishlist = new Set();
 
@@ -137,6 +138,7 @@
     }
     PRODUCTS.forEach((p, i) => p._id = (p.name + i).replace(/\W+/g, "").slice(0, 40) + i);
     buildFilterChips();
+    renderFeatured();
     renderProducts();
   }
 
@@ -156,6 +158,55 @@
       </div>`).join("");
   }
 
+  /* ---------- FEATURED STRIP ----------
+     A small curated selection up top so the page isn't a wall of cards.
+     Picks: badge-flagged first (Bestseller/New/Featured), then best discounts. */
+  const FEATURED_MAX = 4;
+  const FEATURED_WORDS = /^(bestseller|featured|new|top|hot)/i;
+
+  function pickFeatured(list) {
+    const flagged = list.filter(p => FEATURED_WORDS.test(p.badge || ""));
+    const scored = list
+      .filter(p => !flagged.includes(p))
+      .map(p => ({ p, discount: p.sale_price && p.sale_price < p.price ? 1 - p.sale_price / p.price : 0 }))
+      .sort((a, b) => b.discount - a.discount)
+      .map(x => x.p);
+    return [...flagged, ...scored].slice(0, FEATURED_MAX);
+  }
+
+  function renderFeatured() {
+    const strip = $("#featuredStrip"), wrap = $("#featuredWrap");
+    if (!strip || !wrap) return;
+    const picks = pickFeatured(PRODUCTS);
+    if (!picks.length) { wrap.style.display = "none"; return; }
+    wrap.style.display = "";
+    strip.innerHTML = picks.map(p => {
+      const onSale = p.sale_price && p.sale_price > 0 && p.sale_price < p.price;
+      const now = onSale ? p.sale_price : p.price;
+      const badge = p.badge || (onSale ? "Sale" : "");
+      return `
+      <article class="fcard" data-id="${p._id}">
+        ${badge ? `<span class="fcard__badge">${esc(badge)}</span>` : ""}
+        <div class="fcard__media"><img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy"
+          onerror="this.onerror=null;this.src='assets/logo.png';this.style.padding='1.6rem';this.style.opacity='.45';" /></div>
+        <div class="fcard__body">
+          <span class="fcard__cat">${esc(p.category)}</span>
+          <h4 class="fcard__title">${esc(p.name)}</h4>
+          <div class="fcard__foot">
+            <div class="fcard__price">
+              ${onSale ? `<span class="fcard__was">${money(p.price)}</span>` : ""}
+              <span class="fcard__now">${money(now)}</span>
+            </div>
+            <button class="pcard__add" data-add="${p._id}" aria-label="Add to cart">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+        </div>
+      </article>`;
+    }).join("");
+    $$("[data-add]", strip).forEach(b => b.addEventListener("click", () => addToCart(b.dataset.add)));
+  }
+
   function buildFilterChips() {
     const wrap = $("#filterChips");
     const cats = [...new Set(PRODUCTS.map(p => p.category).filter(Boolean))].sort();
@@ -167,6 +218,11 @@
       renderProducts();
     }));
   }
+
+  /* Grid is collapsed by default (featured strip carries the page);
+     searching or picking a category auto-expands. */
+  const COLLAPSED_COUNT = 8;
+  const isBrowsingDefault = () => activeCat === "all" && !searchTerm;
 
   function filtered() {
     return PRODUCTS.filter(p => {
@@ -180,8 +236,12 @@
   function renderProducts() {
     const grid = $("#productGrid");
     const list = filtered();
+    const collapsed = !showAll && isBrowsingDefault();
+    const visible = collapsed ? list.slice(0, COLLAPSED_COUNT) : list;
+
     $("#catalogEmpty").hidden = list.length > 0;
-    grid.innerHTML = list.map(p => {
+    grid.classList.toggle("is-collapsed", collapsed);
+    grid.innerHTML = visible.map(p => {
       const onSale = p.sale_price && p.sale_price > 0 && p.sale_price < p.price;
       const now = onSale ? p.sale_price : p.price;
       const badge = p.badge || (onSale ? "Sale" : "");
@@ -222,8 +282,22 @@
 
     // staggered entrance
     requestAnimationFrame(() => {
-      $$(".pcard", grid).forEach((c, i) => setTimeout(() => c.classList.add("in"), i * 55));
+      $$(".pcard", grid).forEach((c, i) => setTimeout(() => c.classList.add("in"), i * 45));
     });
+
+    // "Show all" button — only relevant in the default browsing view
+    const btn = $("#showAllBtn");
+    if (btn) {
+      const overflow = list.length - COLLAPSED_COUNT;
+      if (isBrowsingDefault() && overflow > 0) {
+        btn.hidden = false;
+        btn.textContent = showAll
+          ? "Show fewer products ↑"
+          : `Show all products (${list.length - visible.length} more) ↓`;
+      } else {
+        btn.hidden = true;
+      }
+    }
   }
 
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
@@ -400,6 +474,13 @@
       toast("Refreshing catalog…", "🔄");
     });
 
+    // "Show all / show fewer" catalog toggle
+    $("#showAllBtn").addEventListener("click", () => {
+      showAll = !showAll;
+      renderProducts();
+      if (!showAll) document.getElementById("catalog").scrollIntoView({ behavior: "smooth" });
+    });
+
     // forms (demo — no backend)
     ["quoteForm", "newsForm"].forEach(id => {
       const f = $("#" + id); if (!f) return;
@@ -422,7 +503,7 @@
     }, { threshold: 0.5 });
     $$("[data-count]").forEach(el => counterIO.observe(el));
 
-    initTilt();
+    initMarquee();
     initCursor();
   }
 
@@ -443,20 +524,23 @@
     requestAnimationFrame(tick);
   }
 
-  function initTilt() {
-    const tilt = $("#heroTilt"); if (!tilt) return;
-    const host = tilt.parentElement;
-    let raf;
-    host.addEventListener("mousemove", e => {
-      const r = host.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width - 0.5;
-      const py = (e.clientY - r.top) / r.height - 0.5;
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        tilt.style.transform = `rotateY(${px * 10}deg) rotateX(${-py * 10}deg) translateZ(0)`;
-      });
-    });
-    host.addEventListener("mouseleave", () => { tilt.style.transform = "rotateY(0) rotateX(0)"; });
+  /* Marquee polish: constant px/sec regardless of viewport (no frantic speed
+     on small screens), pause on hover, recalculated on resize. */
+  function initMarquee() {
+    const track = $(".marquee__track");
+    if (!track) return;
+    const PX_PER_SECOND = 48; // gentle, readable drift
+    const setSpeed = () => {
+      // one full loop = half the track (the second half is the duplicate)
+      const half = track.scrollWidth / 2;
+      track.style.animationDuration = (half / PX_PER_SECOND) + "s";
+    };
+    setSpeed();
+    window.addEventListener("resize", setSpeed);
+    const host = track.parentElement;
+    host.addEventListener("mouseenter", () => track.classList.add("paused"));
+    host.addEventListener("mouseleave", () => track.classList.remove("paused"));
+    // touch: no hover state needed, animation stays slow anyway
   }
 
   function initCursor() {

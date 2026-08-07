@@ -17,3 +17,6 @@ node_modules/
 
 # Local env / secrets (keep your live Google Sheet URL private if you prefer)
 .env
+
+# Hermes session attachments (never commit)
+.hermes/
