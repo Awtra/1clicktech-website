@@ -274,6 +274,54 @@ section{position:relative;padding:clamp(3.5rem,7vw,6.5rem) 0}
 .pcard__add:hover{transform:translateY(-3px) scale(1.05);box-shadow:var(--glow-accent)}
 .pcard__add:active{transform:scale(.92)}
 
+/* ---------- B2B CARD FOOTER (Request Pricing) ---------- */
+.pcard__foot--b2b{align-items:center}
+.pcard__avail{font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:.4rem}
+.pcard__avail::before{content:"";width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0}
+.pcard__quote{white-space:nowrap}
+
+/* ---------- WHO WE SERVE ---------- */
+.serve__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.serve__card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:2.2rem 1.8rem;transition:transform .35s var(--ease),border-color .3s,box-shadow .35s;position:relative;overflow:hidden}
+.serve__card::before{content:"";position:absolute;inset:0;background:var(--grad-brand);opacity:0;transition:opacity .35s;z-index:0;mask:linear-gradient(#000,transparent 40%)}
+.serve__card:hover{transform:translateY(-8px);border-color:var(--line-2);box-shadow:var(--shadow)}
+.serve__ico{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;margin-bottom:1.2rem;
+  background:linear-gradient(135deg,rgba(53,103,180,.10),rgba(68,96,132,.10));border:1px solid var(--line-2);color:var(--blue);position:relative;z-index:1}
+.serve__ico svg{width:26px;height:26px}
+.serve__card h3{font-family:var(--f-display);font-size:1.2rem;color:var(--ink);margin-bottom:.55rem;position:relative;z-index:1}
+.serve__card p{color:var(--muted-lt);font-size:.95rem;position:relative;z-index:1}
+
+/* ---------- ABOUT US ---------- */
+.about{background:linear-gradient(180deg,var(--surface-2),var(--bg));border-block:1px solid var(--line)}
+.about__grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2rem,4vw,4rem);align-items:start}
+.about__story p{color:var(--muted-lt);font-size:1.02rem;margin-top:1.1rem;line-height:1.75}
+.about__tagline{font-family:var(--f-display);font-style:italic;color:var(--ink);font-size:1.1rem}
+.about__thanks{font-weight:700;color:var(--ink)}
+.about__panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:2rem;box-shadow:var(--shadow)}
+.about__block{padding-bottom:1.4rem;margin-bottom:1.4rem;border-bottom:1px solid var(--line)}
+.about__block:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.about__block h3{font-family:var(--f-display);font-size:1.15rem;color:var(--ink);margin-bottom:.6rem}
+.about__block p{color:var(--muted-lt);font-size:.95rem;line-height:1.7}
+.about__values{list-style:none;margin:.7rem 0;display:grid;gap:.35rem}
+.about__values li{font-family:var(--f-display);font-weight:600;color:var(--blue);font-size:1rem;padding-left:1.5rem;position:relative}
+.about__values li::before{content:"✓";position:absolute;left:0;color:var(--blue)}
+.about__stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.6rem;padding-top:1.6rem;border-top:1px solid var(--line);text-align:center}
+.about__stat .stat__num{font-size:clamp(1.4rem,2.4vw,1.9rem);color:var(--blue);background:none;-webkit-text-fill-color:var(--blue)}
+.about__stat .stat__label{color:var(--muted);font-size:.8rem;margin-top:.3rem}
+
+/* ---------- SOURCING NOTE (under catalog) ---------- */
+.catalog__sourcing-note{margin-top:2.6rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:1.8rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap}
+.catalog__sourcing-note p{color:var(--muted-lt);font-size:.98rem;max-width:60ch;margin:0}
+.catalog__sourcing-note strong{color:var(--ink)}
+@media(max-width:700px){.catalog__sourcing-note{flex-direction:column;align-items:flex-start}}
+
+/* ---------- CTA BAND POINTS ---------- */
+.cta-band__points{list-style:none;display:grid;gap:.5rem;margin-top:1.4rem;padding:0}
+.cta-band__points li{color:rgba(255,255,255,.85);font-size:.95rem;padding-left:1.6rem;position:relative}
+.cta-band__points li::before{content:"✓";position:absolute;left:0;color:#8fd3a8;font-weight:700}
+.cta-band__copy a{color:#fff;font-weight:700;text-decoration:underline}
+
 /* skeleton */
 .skl{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
 .skl__media{aspect-ratio:1;background:linear-gradient(100deg,#edf1f7 30%,#e2e8f2 50%,#edf1f7 70%);background-size:200% 100%;animation:shimmer 1.4s infinite}
@@ -417,7 +465,8 @@ section{position:relative;padding:clamp(3.5rem,7vw,6.5rem) 0}
 /* ---------- RESPONSIVE ---------- */
 @media(max-width:960px){
   .why__grid{grid-template-columns:1fr}
-  .triad__grid,.testi__grid{grid-template-columns:1fr}
+  .triad__grid,.testi__grid,.serve__grid{grid-template-columns:1fr}
+  .about__grid{grid-template-columns:1fr}
   .stats__grid{grid-template-columns:repeat(2,1fr);gap:2rem}
   .cta-band__inner{grid-template-columns:1fr}
   .footer__grid{grid-template-columns:1fr 1fr}

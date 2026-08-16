@@ -1,21 +1,19 @@
 /* ============================================================
-   1ClickTech — App Engine
-   Live Google Sheet catalog · cart · filters · animations
+   1ClickTech — App Engine (B2B Sourcing Mode)
+   Live Google Sheet catalog · category filters · RFQ prefill
+   No retail mechanics: no cart, no prices, no sale badges.
    ============================================================ */
 (function () {
   "use strict";
   const CFG = window.SITE_CONFIG || {};
   const $  = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
-  const money = n => CFG.CURRENCY + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   /* ---------- STATE ---------- */
   let PRODUCTS = [];
   let activeCat = "all";
   let searchTerm = "";
   let showAll = false;              // grid collapsed until expanded
-  const cart = new Map();           // key -> {product, qty}
-  const wishlist = new Set();
 
   /* =========================================================
      1) LIVE CATALOG  (Google Sheet → CSV → products)
@@ -62,7 +60,6 @@
   function normalizeImage(url) {
     if (!url) return "";
     url = url.trim();
-    // https://drive.google.com/file/d/FILEID/view?...  OR ...open?id=FILEID
     let m = url.match(/drive\.google\.com\/file\/d\/([-\w]{20,})/) ||
             url.match(/drive\.google\.com\/open\?id=([-\w]{20,})/) ||
             url.match(/[?&]id=([-\w]{20,})/);
@@ -70,27 +67,17 @@
     return url;
   }
 
-  function toNumber(v) {
-    if (v == null) return 0;
-    const n = parseFloat(String(v).replace(/[^0-9.]/g, ""));
-    return isNaN(n) ? 0 : n;
-  }
-
   function rowsToProducts(rows) {
     if (!rows.length) return [];
     const map = buildHeaderMap(rows[0]);
-    if (map.name == null || map.price == null) return []; // sheet not shaped right
+    if (map.name == null) return []; // sheet not shaped right
     const out = [];
     for (let r = 1; r < rows.length; r++) {
       const cells = rows[r];
       const name = (cells[map.name] || "").trim();
       if (!name) continue;
-      const price = toNumber(cells[map.price]);
-      const sale  = map.sale_price != null ? toNumber(cells[map.sale_price]) : 0;
       out.push({
         name,
-        price: price || sale,
-        sale_price: (sale && sale < price) ? sale : (sale && !price ? 0 : sale),
         image: normalizeImage(map.image != null ? cells[map.image] : ""),
         category: (map.category != null ? cells[map.category] : "").trim() || "Products",
         badge: (map.badge != null ? cells[map.badge] : "").trim()
@@ -102,7 +89,6 @@
   async function fetchSheet() {
     const url = (CFG.SHEET_CSV_URL || "").trim();
     if (!url) return null;
-    // cache-bust so refresh always sees latest
     const bust = (url.includes("?") ? "&" : "?") + "_cb=" + Date.now();
     const res = await fetch(url + bust, { cache: "no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
@@ -126,19 +112,18 @@
       const fromSheet = await fetchSheet();
       if (fromSheet) {
         PRODUCTS = fromSheet;
-        setSync("ok", "Live · synced " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+        setSync("ok", "Inventory synced " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
       } else {
         PRODUCTS = CFG.SAMPLE_PRODUCTS.slice();
-        setSync("", "Sample catalog · connect a Google Sheet to go live");
+        setSync("", "Sample list · connect a Google Sheet to go live");
       }
     } catch (err) {
       console.warn("[1ClickTech] Sheet load failed:", err.message);
       if (!PRODUCTS.length) PRODUCTS = CFG.SAMPLE_PRODUCTS.slice();
-      setSync("warn", "Showing last known catalog · retrying");
+      setSync("warn", "Showing last known list · retrying");
     }
     PRODUCTS.forEach((p, i) => p._id = (p.name + i).replace(/\W+/g, "").slice(0, 40) + i);
     buildFilterChips();
-    renderFeatured();
     renderProducts();
   }
 
@@ -158,55 +143,6 @@
       </div>`).join("");
   }
 
-  /* ---------- FEATURED STRIP ----------
-     A small curated selection up top so the page isn't a wall of cards.
-     Picks: badge-flagged first (Bestseller/New/Featured), then best discounts. */
-  const FEATURED_MAX = 4;
-  const FEATURED_WORDS = /^(bestseller|featured|new|top|hot)/i;
-
-  function pickFeatured(list) {
-    const flagged = list.filter(p => FEATURED_WORDS.test(p.badge || ""));
-    const scored = list
-      .filter(p => !flagged.includes(p))
-      .map(p => ({ p, discount: p.sale_price && p.sale_price < p.price ? 1 - p.sale_price / p.price : 0 }))
-      .sort((a, b) => b.discount - a.discount)
-      .map(x => x.p);
-    return [...flagged, ...scored].slice(0, FEATURED_MAX);
-  }
-
-  function renderFeatured() {
-    const strip = $("#featuredStrip"), wrap = $("#featuredWrap");
-    if (!strip || !wrap) return;
-    const picks = pickFeatured(PRODUCTS);
-    if (!picks.length) { wrap.style.display = "none"; return; }
-    wrap.style.display = "";
-    strip.innerHTML = picks.map(p => {
-      const onSale = p.sale_price && p.sale_price > 0 && p.sale_price < p.price;
-      const now = onSale ? p.sale_price : p.price;
-      const badge = p.badge || (onSale ? "Sale" : "");
-      return `
-      <article class="fcard" data-id="${p._id}">
-        ${badge ? `<span class="fcard__badge">${esc(badge)}</span>` : ""}
-        <div class="fcard__media"><img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy"
-          onerror="this.onerror=null;this.src='assets/logo.png';this.style.padding='1.6rem';this.style.opacity='.45';" /></div>
-        <div class="fcard__body">
-          <span class="fcard__cat">${esc(p.category)}</span>
-          <h4 class="fcard__title">${esc(p.name)}</h4>
-          <div class="fcard__foot">
-            <div class="fcard__price">
-              ${onSale ? `<span class="fcard__was">${money(p.price)}</span>` : ""}
-              <span class="fcard__now">${money(now)}</span>
-            </div>
-            <button class="pcard__add" data-add="${p._id}" aria-label="Add to cart">
-              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            </button>
-          </div>
-        </div>
-      </article>`;
-    }).join("");
-    $$("[data-add]", strip).forEach(b => b.addEventListener("click", () => addToCart(b.dataset.add)));
-  }
-
   function buildFilterChips() {
     const wrap = $("#filterChips");
     const cats = [...new Set(PRODUCTS.map(p => p.category).filter(Boolean))].sort();
@@ -219,8 +155,7 @@
     }));
   }
 
-  /* Grid is collapsed by default (featured strip carries the page);
-     searching or picking a category auto-expands. */
+  /* Grid is collapsed by default; searching or picking a category auto-expands. */
   const COLLAPSED_COUNT = 8;
   const isBrowsingDefault = () => activeCat === "all" && !searchTerm;
 
@@ -242,58 +177,40 @@
     $("#catalogEmpty").hidden = list.length > 0;
     grid.classList.toggle("is-collapsed", collapsed);
     grid.innerHTML = visible.map(p => {
-      const onSale = p.sale_price && p.sale_price > 0 && p.sale_price < p.price;
-      const now = onSale ? p.sale_price : p.price;
-      const badge = p.badge || (onSale ? "Sale" : "");
+      const badge = p.badge && !/^(sale|featured|bestseller|new|top|hot)/i.test(p.badge) ? p.badge : "";
       return `
       <article class="pcard" data-id="${p._id}">
         <div class="pcard__media">
           ${badge ? `<span class="pcard__sale">${esc(badge)}</span>` : ""}
-          <button class="pcard__wish${wishlist.has(p._id) ? " on" : ""}" data-wish="${p._id}" aria-label="Save">
-            <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
-          </button>
           <img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy"
                onerror="this.onerror=null;this.src='assets/logo.png';this.style.padding='2.4rem';this.style.opacity='.45';" />
         </div>
         <div class="pcard__body">
           <span class="pcard__cat">${esc(p.category)}</span>
           <h3 class="pcard__title">${esc(p.name)}</h3>
-          <div class="pcard__foot">
-            <div class="pcard__price">
-              ${onSale ? `<span class="pcard__was">${money(p.price)}</span>` : ""}
-              <span class="pcard__now">${money(now)}</span>
-            </div>
-            <button class="pcard__add" data-add="${p._id}" aria-label="Add to cart">
-              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            </button>
+          <div class="pcard__foot pcard__foot--b2b">
+            <span class="pcard__avail">Available to quote</span>
+            <button class="btn btn--tiny btn--accent pcard__quote" data-quote="${p._id}">Request Pricing</button>
           </div>
         </div>
       </article>`;
     }).join("");
 
-    // wire buttons
-    $$("[data-add]", grid).forEach(b => b.addEventListener("click", () => addToCart(b.dataset.add)));
-    $$("[data-wish]", grid).forEach(b => b.addEventListener("click", () => {
-      const id = b.dataset.wish;
-      wishlist.has(id) ? wishlist.delete(id) : wishlist.add(id);
-      b.classList.toggle("on");
-      toast(wishlist.has(id) ? "Saved to wishlist" : "Removed from wishlist");
-    }));
+    // wire Request Pricing → prefill RFQ form
+    $$("[data-quote]", grid).forEach(b => b.addEventListener("click", () => prefillQuote(b.dataset.quote)));
 
     // staggered entrance
     requestAnimationFrame(() => {
       $$(".pcard", grid).forEach((c, i) => setTimeout(() => c.classList.add("in"), i * 45));
     });
 
-    // "Show all" button — only relevant in the default browsing view
+    // "Show all" button — only in the default browsing view with hidden items
     const btn = $("#showAllBtn");
     if (btn) {
       const overflow = list.length - COLLAPSED_COUNT;
       if (isBrowsingDefault() && overflow > 0) {
         btn.hidden = false;
-        btn.textContent = showAll
-          ? "Show fewer products ↑"
-          : `Show all products (${list.length - visible.length} more) ↓`;
+        btn.textContent = showAll ? "Show fewer ↑" : `Show all categories (${list.length - visible.length} more) ↓`;
       } else {
         btn.hidden = true;
       }
@@ -303,109 +220,20 @@
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
 
   /* =========================================================
-     3) CART
+     3) RFQ PREFILL
      ========================================================= */
-  function productById(id) { return PRODUCTS.find(p => p._id === id); }
-  function unitPrice(p) { return (p.sale_price && p.sale_price < p.price) ? p.sale_price : p.price; }
-
-  function addToCart(id) {
-    const p = productById(id);
+  function prefillQuote(id) {
+    const p = PRODUCTS.find(x => x._id === id);
     if (!p) return;
-    const entry = cart.get(id) || { product: p, qty: 0 };
-    entry.qty++;
-    cart.set(id, entry);
-    updateCart(true);
-    toast("Added to cart", "🛒");
-    bumpCartIcon();
-  }
-  function changeQty(id, delta) {
-    const e = cart.get(id); if (!e) return;
-    e.qty += delta;
-    if (e.qty <= 0) cart.delete(id); else cart.set(id, e);
-    updateCart();
-  }
-  function removeItem(id) { cart.delete(id); updateCart(); }
-
-  function cartCount() { let n = 0; cart.forEach(e => n += e.qty); return n; }
-  function cartTotal() { let t = 0; cart.forEach(e => t += unitPrice(e.product) * e.qty); return t; }
-
-  function bumpCartIcon() {
-    const el = $("#cartCount");
-    el.style.transform = "scale(1.4)";
-    setTimeout(() => el.style.transform = "", 200);
-  }
-
-  function updateCart(openDrawer) {
-    const count = cartCount();
-    const badge = $("#cartCount");
-    badge.textContent = count;
-    badge.classList.toggle("show", count > 0);
-
-    // Never wipe #cartEmpty with innerHTML="" — remove only the item rows,
-    // or every updateCart after the first add crashes on a null #cartEmpty.
-    const body = $("#cartBody"), foot = $("#cartFoot"), empty = $("#cartEmpty");
-    $$(".cart-item", body).forEach(r => r.remove());
-    if (count === 0) {
-      empty.style.display = "";
-      foot.hidden = true;
-    } else {
-      empty.style.display = "none";
-      cart.forEach((e, id) => {
-        const p = e.product, up = unitPrice(p);
-        const row = document.createElement("div");
-        row.className = "cart-item";
-        row.innerHTML = `
-          <img class="cart-item__img" src="${esc(p.image)}" alt="" onerror="this.src='assets/logo.png';this.style.opacity='.4'" />
-          <div class="cart-item__info">
-            <div class="cart-item__title">${esc(p.name)}</div>
-            <div class="cart-item__price">${money(up)}</div>
-            <div class="cart-item__qty">
-              <button aria-label="Decrease">−</button>
-              <span>${e.qty}</span>
-              <button aria-label="Increase">+</button>
-              <button class="cart-item__remove">Remove</button>
-            </div>
-          </div>`;
-        const [dec, inc] = row.querySelectorAll(".cart-item__qty button");
-        dec.addEventListener("click", () => changeQty(id, -1));
-        inc.addEventListener("click", () => changeQty(id, +1));
-        row.querySelector(".cart-item__remove").addEventListener("click", () => removeItem(id));
-        body.appendChild(row);
-      });
-      foot.hidden = false;
-      const total = cartTotal();
-      $("#cartTotal").textContent = money(total);
-      const note = $("#shipNote");
-      const th = CFG.FREE_SHIP_THRESHOLD || 75;
-      if (total >= th) { note.textContent = "🎉 You've unlocked FREE shipping!"; note.classList.add("free"); }
-      else { note.textContent = `Add ${money(th - total)} more to unlock free shipping.`; note.classList.remove("free"); }
+    const ta = $("#quoteRequirements");
+    if (ta) {
+      const line = `${p.name} (${p.category})`;
+      const existing = ta.value.trim();
+      ta.value = existing && !existing.includes(line) ? existing + "\n" + line + " — qty: " : line + " — qty: ";
     }
-    if (openDrawer) openCart();
-  }
-
-  // Scrim + scroll-lock are shared by the cart drawer and the mobile menu.
-  function syncOverlay() {
-    const anyOpen = $("#cartDrawer").classList.contains("open") || $("#navLinks").classList.contains("open");
-    $("#drawerScrim").classList.toggle("open", anyOpen);
-    document.body.classList.toggle("no-scroll", anyOpen);
-  }
-  function openCart() { closeMenu(); $("#cartDrawer").classList.add("open"); $("#cartDrawer").setAttribute("aria-hidden", "false"); syncOverlay(); }
-  function closeCart() { $("#cartDrawer").classList.remove("open"); $("#cartDrawer").setAttribute("aria-hidden", "true"); syncOverlay(); }
-
-  function openMenu() {
-    $("#hamburger").classList.add("open");
-    $("#hamburger").setAttribute("aria-expanded", "true");
-    $("#navLinks").classList.add("open");
-    $("#nav").classList.add("menu-open");   // lifts the header above the scrim
-    syncOverlay();
-  }
-  function closeMenu() {
-    $("#hamburger").classList.remove("open");
-    $("#hamburger").setAttribute("aria-expanded", "false");
-    $("#navLinks").classList.remove("open");
-    // keep the header above the scrim until the slide-out transition ends
-    setTimeout(() => { if (!$("#navLinks").classList.contains("open")) $("#nav").classList.remove("menu-open"); }, 400);
-    syncOverlay();
+    document.getElementById("contact").scrollIntoView({ behavior: "smooth" });
+    setTimeout(() => { const ta2 = $("#quoteRequirements"); if (ta2) ta2.focus(); }, 600);
+    toast("Added to your quote request", "📋");
   }
 
   /* =========================================================
@@ -421,12 +249,12 @@
   }
 
   /* =========================================================
-     5) UI: nav, reveal, counters, tilt, cursor, progress
+     5) UI: nav, reveal, counters, cursor, progress
      ========================================================= */
   function initUI() {
     $("#year").textContent = new Date().getFullYear();
 
-    // sticky nav shadow
+    // sticky nav shadow + scroll progress + back-to-top
     const nav = $("#nav");
     const onScroll = () => {
       nav.classList.toggle("scrolled", window.scrollY > 20);
@@ -442,53 +270,37 @@
     const burger = $("#hamburger"), links = $("#navLinks");
     burger.addEventListener("click", () => links.classList.contains("open") ? closeMenu() : openMenu());
     $$("#navLinks a").forEach(a => a.addEventListener("click", closeMenu));
-    // if the viewport grows past the mobile breakpoint with the menu open, reset it
     matchMedia("(min-width: 961px)").addEventListener("change", e => { if (e.matches) closeMenu(); });
 
-    // cart open/close
-    $("#cartToggle").addEventListener("click", openCart);
-    $("#cartClose").addEventListener("click", closeCart);
-    $("#drawerScrim").addEventListener("click", () => { closeCart(); closeMenu(); });
-    $("#cartShopBtn").addEventListener("click", closeCart);
-    document.addEventListener("keydown", e => { if (e.key === "Escape") { closeCart(); closeMenu(); } });
+    function openMenu() {
+      burger.classList.add("open"); burger.setAttribute("aria-expanded", "true");
+      links.classList.add("open"); nav.classList.add("menu-open");
+      document.body.classList.add("no-scroll");
+    }
+    function closeMenu() {
+      burger.classList.remove("open"); burger.setAttribute("aria-expanded", "false");
+      links.classList.remove("open");
+      setTimeout(() => { if (!links.classList.contains("open")) nav.classList.remove("menu-open"); }, 400);
+      document.body.classList.remove("no-scroll");
+    }
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenu(); });
 
     // search
-    const doSearch = v => { searchTerm = v; renderProducts(); };
-    $("#catalogSearch").addEventListener("input", e => doSearch(e.target.value));
-    $("#searchToggle").addEventListener("click", () => {
-      document.getElementById("catalog").scrollIntoView({ behavior: "smooth" });
-      setTimeout(() => $("#catalogSearch").focus(), 500);
-    });
+    $("#catalogSearch").addEventListener("input", e => { searchTerm = e.target.value; renderProducts(); });
 
-    // category tiles -> filter + scroll
-    $$("#catGrid .cat-tile").forEach(tile => tile.addEventListener("click", e => {
-      const cat = tile.dataset.cat;
-      const chip = $(`#filterChips .chip--filter[data-cat="${cat}"]`);
-      if (chip) chip.click();
-    }));
-
-    // refresh button
-    $("#refreshBtn").addEventListener("click", () => {
-      const b = $("#refreshBtn"); b.classList.add("spinning");
-      loadCatalog(true).finally(() => setTimeout(() => b.classList.remove("spinning"), 700));
-      toast("Refreshing catalog…", "🔄");
-    });
-
-    // "Show all / show fewer" catalog toggle
+    // show all / show fewer
     $("#showAllBtn").addEventListener("click", () => {
       showAll = !showAll;
       renderProducts();
-      if (!showAll) document.getElementById("catalog").scrollIntoView({ behavior: "smooth" });
+      if (!showAll) document.getElementById("solutions").scrollIntoView({ behavior: "smooth" });
     });
 
-    // forms (demo — no backend)
-    ["quoteForm", "newsForm"].forEach(id => {
-      const f = $("#" + id); if (!f) return;
-      f.addEventListener("submit", e => {
-        e.preventDefault();
-        f.reset();
-        toast(id === "newsForm" ? "You're on the list! 🎉" : "Quote request sent — we'll reply within 1 business hour.", "✓");
-      });
+    // quote form (demo — no backend yet; wire to email/CRM later)
+    const qf = $("#quoteForm");
+    if (qf) qf.addEventListener("submit", e => {
+      e.preventDefault();
+      qf.reset();
+      toast("Quote request sent — we'll reply within 1 business day.", "✓");
     });
 
     // reveal on scroll
@@ -503,7 +315,6 @@
     }, { threshold: 0.5 });
     $$("[data-count]").forEach(el => counterIO.observe(el));
 
-    initMarquee();
     initCursor();
   }
 
@@ -522,25 +333,6 @@
       else el.textContent = prefix + target.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + suffix;
     }
     requestAnimationFrame(tick);
-  }
-
-  /* Marquee polish: constant px/sec regardless of viewport (no frantic speed
-     on small screens), pause on hover, recalculated on resize. */
-  function initMarquee() {
-    const track = $(".marquee__track");
-    if (!track) return;
-    const PX_PER_SECOND = 48; // gentle, readable drift
-    const setSpeed = () => {
-      // one full loop = half the track (the second half is the duplicate)
-      const half = track.scrollWidth / 2;
-      track.style.animationDuration = (half / PX_PER_SECOND) + "s";
-    };
-    setSpeed();
-    window.addEventListener("resize", setSpeed);
-    const host = track.parentElement;
-    host.addEventListener("mouseenter", () => track.classList.add("paused"));
-    host.addEventListener("mouseleave", () => track.classList.remove("paused"));
-    // touch: no hover state needed, animation stays slow anyway
   }
 
   function initCursor() {
