@@ -345,7 +345,12 @@ section{position:relative;padding:clamp(3.5rem,7vw,6.5rem) 0}
 .cat-tile span:last-child{font-family:var(--f-display);font-weight:600;color:var(--ink);font-size:.98rem;position:relative;z-index:1}
 
 /* ---------- WHY ---------- */
-.why__grid{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(2rem,4vw,4rem);align-items:center}
+.why__grid{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(2rem,4vw,4rem);align-items:start}
+.why__intro{position:sticky;top:6rem}
+.why__intro .btn{margin-top:1.8rem}
+@media(max-width:960px){
+  .why__intro{position:static}
+}
 .why__features{display:grid;gap:1rem}
 .feature{display:flex;gap:1rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.3rem 1.4rem;transition:transform .3s var(--ease),border-color .3s,box-shadow .3s}
 .feature:hover{transform:translateX(6px);border-color:var(--line-2);box-shadow:var(--shadow)}
@@ -487,6 +492,7 @@ section{position:relative;padding:clamp(3.5rem,7vw,6.5rem) 0}
 @media(max-width:560px){
   .topbar__right{display:none}
   .hero__title br{display:none}
+  .btn--tiny{--pad:.62rem 1rem;min-height:40px} /* 40px min tap target */
   .stats__grid{grid-template-columns:1fr 1fr}
   .footer__grid{grid-template-columns:1fr}
   .cta-form__row{grid-template-columns:1fr}
@@ -496,15 +502,22 @@ section{position:relative;padding:clamp(3.5rem,7vw,6.5rem) 0}
   .pcard__media img{padding:.9rem}
   .pcard__body{padding:.8rem .8rem 1rem}
   .pcard__title{font-size:.82rem;-webkit-line-clamp:2;min-height:2.2em}
-  .pcard__now{font-size:1.05rem}
-  .pcard__was{font-size:.72rem}
-  .pcard__add{width:38px;height:38px;border-radius:11px}
   .pcard__sale{top:.6rem;left:.6rem;font-size:.6rem;padding:.22rem .5rem}
+  /* B2B mobile card footer: avail label above a full-width quote button */
+  .pcard__foot--b2b{flex-wrap:wrap;gap:.4rem}
+  .pcard__avail{width:100%;font-size:.7rem}
+  .pcard__quote{width:100%;text-align:center;justify-content:center}
   .catalog__toolbar{gap:.7rem}
   .search-field{min-width:0;padding:.6rem 1rem}
   .filter-chips{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;max-width:100%;padding-bottom:.2rem}
   .filter-chips::-webkit-scrollbar{display:none}
-  .chip--filter{flex-shrink:0;padding:.42rem .85rem;font-size:.8rem}
+  .chip--filter{flex-shrink:0;padding:.62rem 1rem;font-size:.82rem;min-height:40px} /* 40px min tap target */
+  /* About panel stats: avoid 3-column squeeze on narrow phones */
+  .about__stat-row{grid-template-columns:1fr;gap:.7rem}
+  .about__panel{padding:1.4rem}
+  /* Sourcing note: full-width CTA */
+  .catalog__sourcing-note{padding:1.4rem}
+  .catalog__sourcing-note .btn{width:100%;justify-content:center}
 }
 @media(prefers-reduced-motion:reduce){
   *{animation-duration:.001ms!important;transition-duration:.001ms!important}
