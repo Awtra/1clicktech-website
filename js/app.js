@@ -386,13 +386,17 @@
     const suffix = el.dataset.suffix || "";
     const decimals = (String(target).split(".")[1] || "").length;
     const dur = 1500, start = performance.now();
+    // Only group thousands for big numbers — years like 2016 must stay "2016", not "2,016"
+    const fmt = v => v.toLocaleString("en-US", {
+      minimumFractionDigits: decimals, maximumFractionDigits: decimals,
+      useGrouping: target >= 10000
+    });
     function tick(now) {
       const t = Math.min((now - start) / dur, 1);
       const eased = 1 - Math.pow(1 - t, 3);
-      const val = target * eased;
-      el.textContent = prefix + val.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + suffix;
+      el.textContent = prefix + fmt(target * eased) + suffix;
       if (t < 1) requestAnimationFrame(tick);
-      else el.textContent = prefix + target.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + suffix;
+      else el.textContent = prefix + fmt(target) + suffix;
     }
     requestAnimationFrame(tick);
   }
