@@ -86,16 +86,44 @@
     return out;
   }
 
+  // Accept ANY Google Sheets link the team pastes and turn it into CSV feeds:
+  //  - regular share link  (docs.google.com/spreadsheets/d/ID/edit...) → gviz CSV (CORS-friendly), export CSV fallback
+  //  - published CSV link  (...output=csv) → used as-is
+  // Requires the sheet's Share setting: "Anyone with the link → Viewer".
+  function sheetUrlToCsv(url) {
+    url = (url || "").trim();
+    if (!url) return [];
+    if (/output=csv|format=csv/i.test(url)) return [url];    // already a CSV endpoint
+    const m = url.match(/docs\.google\.com\/spreadsheets\/(?:u\/\d+\/)?d\/([-\w]+)/);
+    if (m) {
+      const gid = url.match(/[?#&]gid=(\d+)/);               // keep the specific tab if given
+      const gidQ = gid ? "&gid=" + gid[1] : "";
+      return [
+        "https://docs.google.com/spreadsheets/d/" + m[1] + "/gviz/tq?tqx=out:csv" + gidQ,   // CORS-friendly
+        "https://docs.google.com/spreadsheets/d/" + m[1] + "/export?format=csv" + gidQ      // fallback
+      ];
+    }
+    return [url];                                            // some other CSV-ish URL: try as-is
+  }
+  window.__sheetUrlToCsv = sheetUrlToCsv;                    // exposed for tests
+
   async function fetchSheet() {
-    const url = (CFG.SHEET_CSV_URL || "").trim();
-    if (!url) return null;
-    const bust = (url.includes("?") ? "&" : "?") + "_cb=" + Date.now();
-    const res = await fetch(url + bust, { cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const text = await res.text();
-    const products = rowsToProducts(parseCSV(text));
-    if (!products.length) throw new Error("No valid rows in sheet");
-    return products;
+    const urls = sheetUrlToCsv(CFG.SHEET_CSV_URL);
+    if (!urls.length) return null;
+    let lastErr = null;
+    for (const url of urls) {
+      try {
+        const bust = (url.includes("?") ? "&" : "?") + "_cb=" + Date.now();
+        const res = await fetch(url + bust, { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const text = await res.text();
+        if (/^\s*</.test(text)) throw new Error("Got HTML back (sheet not shared?)"); // login page = not public
+        const products = rowsToProducts(parseCSV(text));
+        if (!products.length) throw new Error("No valid rows in sheet");
+        return products;
+      } catch (e) { lastErr = e; }
+    }
+    throw lastErr || new Error("No sheet URL");
   }
 
   function setSync(state, text) {

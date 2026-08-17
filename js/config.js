@@ -14,17 +14,20 @@ window.SITE_CONFIG = {
      1. Open your Google Sheet with columns:
             name | image | category
         (name and image are required; category is optional but recommended)
-     2. File ▸ Share ▸ Publish to web ▸ pick the sheet ▸ CSV ▸ Publish
-     3. Copy the URL it gives you (it ends in output=csv)
+     2. Share ▸ General access ▸ "Anyone with the link" ▸ Viewer ▸ Done
+     3. Copy the sheet's link from your browser address bar — that's it.
+        (The old "Publish to web" CSV link also still works if you have one.)
      4. Paste it below as SHEET_CSV_URL.
 
-     The site re-reads the sheet every REFRESH_MINUTES automatically,
-     so adding / editing / removing a row updates the website live.
+     The link you paste is PERMANENT — you never change it again. Editing the
+     sheet updates the same link's data, and the site re-reads it every
+     REFRESH_MINUTES, so adding / editing / removing a row updates the
+     website live within ~5 minutes.
 
      Leave SHEET_CSV_URL empty ("") to run on the built-in sample
      catalog below (great for previewing before you connect a sheet).
   --------------------------------------------------------- */
-  SHEET_CSV_URL: "",              // <-- paste your published CSV URL here
+  SHEET_CSV_URL: "",              // <-- paste ANY Google Sheets link here (the normal share link works — see below)
   REFRESH_MINUTES: 5,             // auto-refresh interval
 
   // Column header names in your sheet (change only if you rename columns)

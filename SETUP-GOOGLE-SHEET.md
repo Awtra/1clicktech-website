@@ -40,26 +40,27 @@ Paste the full image URL, e.g. `https://1clktech.com/wp-content/uploads/2020/04/
 
 ---
 
-### Step 3 — Publish the sheet as CSV
-1. In your sheet: **File ▸ Share ▸ Publish to web**.
-2. In the dialog: **Link** tab → first dropdown = pick your sheet's tab (e.g. *Sheet1*) → second dropdown = **Comma-separated values (.csv)**.
-3. Click **Publish** → **OK**.
-4. Copy the URL it gives you. It looks like:
-   ```
-   https://docs.google.com/spreadsheets/d/e/2PACX-XXXXXXXX/pub?gid=0&single=true&output=csv
-   ```
+### Step 3 — Share the sheet (one click)
+1. In your sheet: click **Share** (top-right).
+2. Under **General access**, choose **"Anyone with the link"** → role **Viewer** → **Done**.
 
-> ⚠️ "Publish to web" is **not** the same as the normal "Share" button. You must use *Publish to web* so the site can read the CSV. The published CSV only exposes the columns above — nothing else in your Google account.
+That's it. The site reads the sheet directly from its link. *(The old "Publish to web → CSV" method also still works if you already have one of those links.)*
 
----
+> ⚠️ The "Anyone with the link" step is mandatory — without it the site can't read the sheet and falls back to the sample catalog.
 
 ### Step 4 — Plug it into the site
-1. Open **`js/config.js`** in the project.
-2. Paste your URL between the quotes on the `SHEET_CSV_URL` line:
-   ```js
-   SHEET_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?gid=0&single=true&output=csv",
+1. Copy the sheet's link from your **browser address bar** — it looks like:
    ```
-3. Save, commit, push (GitHub Pages redeploys in ~1 minute).
+   https://docs.google.com/spreadsheets/d/1AbC_dEfGHIjklmNoPQR/edit
+   ```
+2. Open **`js/config.js`** in the project.
+3. Paste it between the quotes on the `SHEET_CSV_URL` line:
+   ```js
+   SHEET_CSV_URL: "https://docs.google.com/spreadsheets/d/1AbC_dEfGHIjklmNoPQR/edit",
+   ```
+4. Save, commit, push (GitHub Pages redeploys in ~1 minute).
+
+**This link is permanent.** You never have to update it again — when you edit the sheet, the same link serves the new data, and the site picks it up automatically.
 
 You'll know it worked when the little status pill under the "What we source" heading turns **green: "Inventory synced 3:42 PM"**. 🎉
 
@@ -92,10 +93,10 @@ Changes appear on the site within ~5 minutes. That's the whole workflow.
 
 | Symptom | Fix |
 |--------|-----|
-| Status pill stays grey / "Sample list" | The `SHEET_CSV_URL` is empty or wrong. Re-copy the **output=csv** link from *Publish to web*. |
-| Products don't load at all | Make sure the URL ends in `output=csv` and the sheet is **Published to web**, not just shared. |
+| Status pill stays grey / "Sample list" | The `SHEET_CSV_URL` is empty or wrong. Paste the sheet link straight from your browser address bar. |
+| Products don't load at all | The sheet isn't shared. Share ▸ "Anyone with the link" ▸ Viewer. |
 | An image is blank | Drive file isn't set to **"Anyone with the link → Viewer"**, or the URL is a folder, not a file. |
-| A product won't disappear after deleting | Wait up to 5 min for the next sync. Google also caches published sheets ~5 min. |
+| A product won't disappear after deleting | Wait up to 5 min for the next sync. Google can also cache sheet exports ~5 min. |
 
 ---
 
