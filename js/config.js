@@ -37,6 +37,22 @@ window.SITE_CONFIG = {
     category:   ["category", "cat", "department"]
   },
 
+  /* ---------------------------------------------------------
+     GOOGLE REVIEWS WIDGET
+     ---------------------------------------------------------
+     1. Get a Google Business Profile (business.google.com) so
+        customers can leave Google reviews — free, ~10 min setup.
+     2. On https://trustindex.io create the FREE Google Reviews
+        widget for that profile (no card needed) — or use Elfsight.
+     3. Copy the widget's <iframe ...></iframe> embed snippet
+        and paste it WHOLE between the backticks below.
+     4. Commit + push. The "Google Reviews" band appears in the
+        testimonials section, auto-synced with new reviews.
+
+     Leave it empty and the band stays hidden — nothing breaks.
+  --------------------------------------------------------- */
+  GOOGLE_REVIEW_EMBED: ``,       // <-- paste the widget iframe snippet between the backticks
+
   CURRENCY: "$",
 
   /* ---------------------------------------------------------

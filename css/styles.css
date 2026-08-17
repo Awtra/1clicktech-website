@@ -384,6 +384,14 @@ section{position:relative;padding:clamp(3.5rem,7vw,6.5rem) 0}
 .testi__card footer{color:var(--muted);font-size:.88rem}
 .testi__card footer strong{color:var(--ink);font-family:var(--f-display)}
 
+/* ---------- GOOGLE REVIEWS BAND ---------- */
+.grev{margin-top:2.6rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:2rem;transition:border-color .3s,box-shadow .3s}
+.grev:hover{border-color:var(--line-2);box-shadow:var(--shadow)}
+.grev__head{display:flex;align-items:center;justify-content:center;margin-bottom:1.4rem}
+.grev__head h3{font-family:var(--f-display);font-size:1.3rem;color:var(--ink)}
+.grev__widget{display:flex;justify-content:center;overflow:hidden}
+.grev__widget iframe{max-width:100%;border:none;border-radius:var(--r);background:transparent}
+
 /* ---------- CTA BAND (navy band) ---------- */
 .cta-band{position:relative}
 .cta-band__inner{background:linear-gradient(120deg,var(--navy),var(--steel));border:1px solid var(--line-2);border-radius:var(--r-xl);

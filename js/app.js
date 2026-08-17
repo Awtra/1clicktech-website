@@ -379,6 +379,19 @@
 
     initMarquee();
     initCursor();
+    initGoogleReviews();
+  }
+
+  /* Google Reviews widget: inject the Trustindex/Elfsight embed only when
+     configured; the whole band stays hidden otherwise. */
+  function initGoogleReviews() {
+    const band = $("#googleReviews");
+    const slot = $("#googleReviewWidget");
+    if (!band || !slot) return;
+    const embed = (CFG.GOOGLE_REVIEW_EMBED || "").trim();
+    if (!embed) return;                       // not configured → band remains hidden
+    slot.innerHTML = embed;
+    band.hidden = false;
   }
 
   function countUp(el) {
