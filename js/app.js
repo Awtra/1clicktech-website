@@ -403,14 +403,18 @@
   }
 
   /* Marquee: constant calm speed regardless of screen size (a fixed-duration
-     animation feels frantic on narrow phones). Pauses on hover, recalibrates
-     on resize and after web fonts finish loading (widths change with fonts). */
+     animation feels frantic on narrow phones). Pauses on hover, stops for
+     reduced-motion users, recalibrates on resize + after fonts load. */
   function initMarquee() {
     const track = $(".marquee__track"); if (!track) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      track.classList.add("paused");                          // respect user preference: no motion
+      return;
+    }
     const calm = () => {
       const half = track.scrollWidth / 2;
       if (!half) return;
-      const pxPerSec = window.innerWidth <= 560 ? 16 : 30;   // gentle on phones
+      const pxPerSec = window.innerWidth <= 560 ? 10 : 24;   // very gentle on phones
       track.style.animationDuration = (half / pxPerSec) + "s";
     };
     calm();
