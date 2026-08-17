@@ -377,6 +377,7 @@
     }, { threshold: 0.5 });
     $$("[data-count]").forEach(el => counterIO.observe(el));
 
+    initMarquee();
     initCursor();
   }
 
@@ -399,6 +400,24 @@
       else el.textContent = prefix + fmt(target) + suffix;
     }
     requestAnimationFrame(tick);
+  }
+
+  /* Marquee: constant calm speed regardless of screen size (a fixed-duration
+     animation feels frantic on narrow phones). Pauses on hover, recalibrates
+     on resize and after web fonts finish loading (widths change with fonts). */
+  function initMarquee() {
+    const track = $(".marquee__track"); if (!track) return;
+    const calm = () => {
+      const half = track.scrollWidth / 2;
+      if (!half) return;
+      const pxPerSec = window.innerWidth <= 560 ? 16 : 30;   // gentle on phones
+      track.style.animationDuration = (half / pxPerSec) + "s";
+    };
+    calm();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(calm);
+    window.addEventListener("resize", calm);
+    track.addEventListener("mouseenter", () => track.classList.add("paused"));
+    track.addEventListener("mouseleave", () => track.classList.remove("paused"));
   }
 
   function initCursor() {
