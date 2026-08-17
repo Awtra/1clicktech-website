@@ -403,8 +403,9 @@
   }
 
   /* Marquee: constant calm speed regardless of screen size (a fixed-duration
-     animation feels frantic on narrow phones). Pauses on hover, stops for
-     reduced-motion users, recalibrates on resize + after fonts load. */
+     animation feels frantic on narrow phones). Pauses on hover — real hover
+     devices only (touch devices can fire mouseenter on tap and never fire
+     mouseleave, which freezes the marquee). Stops for reduced-motion users. */
   function initMarquee() {
     const track = $(".marquee__track"); if (!track) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -420,8 +421,10 @@
     calm();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(calm);
     window.addEventListener("resize", calm);
-    track.addEventListener("mouseenter", () => track.classList.add("paused"));
-    track.addEventListener("mouseleave", () => track.classList.remove("paused"));
+    if (matchMedia("(hover: hover)").matches) {              // pause-on-hover only for real hover devices
+      track.addEventListener("mouseenter", () => track.classList.add("paused"));
+      track.addEventListener("mouseleave", () => track.classList.remove("paused"));
+    }
   }
 
   function initCursor() {
