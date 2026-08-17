@@ -1,14 +1,14 @@
-name,price,sale_price,image,category,badge
-"Networking Starter Kit — Wi-Fi Router, 24-Port Switch & Cat6 Cable",349,279,assets/products/networking-bundle.jpg,Networking,Bestseller
-"Enterprise Tower Servers — Multi-Bay Storage, LED Status, Rack Ready",1899,1599,assets/products/tower-servers.jpg,Servers,Featured
-"Business Chromebook — Chrome OS, Full Keyboard & Trackpad",549,449,assets/products/chromebook.jpg,Chromebooks,Sale
-"Storage Bundle — 4-Bay NAS + 4TB SATA Drive + SSD",799,649,assets/products/storage-bundle.jpg,Storage,Featured
-"Yealink IP Desk Phone — Color LCD, HD Voice Handset",189,149,assets/products/ip-phone.jpg,IP Phones,Sale
-"Epson Flatbed Scanner — Open Lid, High-Resolution Platen",229,189,assets/products/scanner.jpg,Printers & Scanners,Sale
-"Brother Color Multifunction Printer — Touchscreen, ADF",449,379,assets/products/mfp-printer.jpg,Printers & Scanners,Featured
-"Epson 3LCD Projector — Bright Lens, Adjustable Focus",599,499,assets/products/projector.jpg,Projectors,Sale
-"Gigabyte GeForce RTX Graphics Card — Triple-Fan Cooling",899,749,assets/products/gpu.jpg,GPU,Featured
-"Epson Thermal Receipt Printer — POS, Top-Exit Paper",299,249,assets/products/receipt-printer.jpg,Receipt Printers,Sale
-"Laptop Accessory Bundle — Bag, Mouse, USB-C Hub, Stand & Cooler",159,129,assets/products/laptop-accessories.jpg,Laptop Accessories,Bestseller
-"Bullet IP Security Camera — IR Night Vision, Wall Mount",139,109,assets/products/ip-camera.jpg,IP Camera,Sale
-"Compact Thermal Receipt Printer — 80mm POS, LED Indicators",179,149,assets/products/thermal-printer.jpg,Thermal Printer,Sale
+name,image,category
+"Networking Starter Kit — Wi-Fi Router, 24-Port Switch & Cat6 Cable",assets/products/networking-bundle.jpg,Networking
+"Enterprise Tower Servers — Multi-Bay Storage, LED Status, Rack Ready",assets/products/tower-servers.jpg,Servers
+"Business Chromebook — Chrome OS, Full Keyboard & Trackpad",assets/products/chromebook.jpg,Chromebooks
+"Storage Bundle — 4-Bay NAS + 4TB SATA Drive + SSD",assets/products/storage-bundle.jpg,Storage
+"Yealink IP Desk Phone — Color LCD, HD Voice Handset",assets/products/ip-phone.jpg,IP Phones
+"Epson Flatbed Scanner — Open Lid, High-Resolution Platen",assets/products/scanner.jpg,Printers & Scanners
+"Brother Color Multifunction Printer — Touchscreen, ADF",assets/products/mfp-printer.jpg,Printers & Scanners
+"Epson 3LCD Projector — Bright Lens, Adjustable Focus",assets/products/projector.jpg,Projectors
+"Gigabyte GeForce RTX Graphics Card — Triple-Fan Cooling",assets/products/gpu.jpg,GPU
+"Epson Thermal Receipt Printer — POS, Top-Exit Paper",assets/products/receipt-printer.jpg,Receipt Printers
+"Laptop Accessory Bundle — Bag, Mouse, USB-C Hub, Stand & Cooler",assets/products/laptop-accessories.jpg,Laptop Accessories
+"Bullet IP Security Camera — IR Night Vision, Wall Mount",assets/products/ip-camera.jpg,IP Camera
+"Compact Thermal Receipt Printer — 80mm POS, LED Indicators",assets/products/thermal-printer.jpg,Thermal Printer

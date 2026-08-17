@@ -376,7 +376,7 @@ section{position:relative;padding:clamp(3.5rem,7vw,6.5rem) 0}
 .step__arrow{display:grid;place-items:center;font-size:1.6rem;color:var(--blue);font-weight:700}
 
 /* ---------- TESTIMONIALS ---------- */
-.testi__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.testi__grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem}
 .testi__card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:1.8rem;transition:transform .35s var(--ease),border-color .3s,box-shadow .35s;position:relative}
 .testi__card:hover{transform:translateY(-6px);border-color:var(--line-2);box-shadow:var(--shadow)}
 .stars{color:var(--blue);letter-spacing:.15em;margin-bottom:.9rem;font-size:1.05rem}

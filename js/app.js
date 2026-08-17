@@ -295,12 +295,46 @@
       if (!showAll) document.getElementById("solutions").scrollIntoView({ behavior: "smooth" });
     });
 
-    // quote form (demo — no backend yet; wire to email/CRM later)
+    // quote form → email via Formspree (see config.js to connect)
     const qf = $("#quoteForm");
-    if (qf) qf.addEventListener("submit", e => {
+    if (qf) qf.addEventListener("submit", async e => {
       e.preventDefault();
-      qf.reset();
-      toast("Quote request sent — we'll reply within 1 business day.", "✓");
+      const btn = qf.querySelector("button[type=submit]");
+      const endpoint = (CFG.FORMSPREE_ENDPOINT || "").trim();
+
+      // No endpoint configured → friendly demo mode (nothing is sent)
+      if (!endpoint) {
+        toast("Form is in preview mode — connect it in js/config.js to receive emails.", "ℹ️");
+        return;
+      }
+
+      btn.disabled = true;
+      const orig = btn.innerHTML;
+      btn.innerHTML = "Sending…";
+
+      try {
+        const data = new FormData(qf);
+        data.append("_subject", "New quote request — 1ClickTech website");
+        data.append("_template", "table");     // nicely formatted email
+        data.append("_captcha", "false");      // Formspree bot filter handles spam
+        const res = await fetch(endpoint, {
+          method: "POST",
+          body: data,
+          headers: { "Accept": "application/json" }
+        });
+        if (res.ok) {
+          qf.reset();
+          toast("Quote request sent — we'll reply within 1 business day.", "✓");
+        } else {
+          const err = await res.json().catch(() => ({}));
+          toast((err.errors || []).map(x => x.message).join(" ") || "Something went wrong — please call us instead.", "⚠️");
+        }
+      } catch (err) {
+        toast("Couldn't reach the form service — please call +1 (484) 221-8279.", "⚠️");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+      }
     });
 
     // reveal on scroll

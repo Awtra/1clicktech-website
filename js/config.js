@@ -37,6 +37,20 @@ window.SITE_CONFIG = {
   CURRENCY: "$",
 
   /* ---------------------------------------------------------
+     QUOTE FORM → EMAIL (Formspree)
+     ---------------------------------------------------------
+     1. Go to https://formspree.io and sign up (free: 50 submissions/mo).
+     2. New Form → name it e.g. "Quote Requests" → set the send-to
+        email (sales@1clktech.com) → confirm the email they send you.
+     3. Copy your form's endpoint, e.g. https://formspree.io/f/xwpekqjr
+     4. Paste it below. Done — every quote request now lands in the inbox.
+
+     Leave it empty ("") and the form shows a friendly demo message
+     instead of sending anything.
+  --------------------------------------------------------- */
+  FORMSPREE_ENDPOINT: "",         // <-- paste your Formspree endpoint here
+
+  /* ---------------------------------------------------------
      FALLBACK / SAMPLE CATALOG
      Used when SHEET_CSV_URL is empty, or if the sheet ever
      fails to load (so the sourcing list is never blank).
