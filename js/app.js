@@ -134,6 +134,7 @@
   }
 
   async function loadCatalog(isRefresh) {
+    if (!$("#productGrid")) return;          // catalog section removed → nothing to render
     const grid = $("#productGrid");
     if (!isRefresh) renderSkeletons(8);
     try {
@@ -313,11 +314,12 @@
     }
     document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenu(); });
 
-    // search
-    $("#catalogSearch").addEventListener("input", e => { searchTerm = e.target.value; renderProducts(); });
+    // search + show all (only wired when the product grid exists)
+    const searchEl = $("#catalogSearch");
+    if (searchEl) searchEl.addEventListener("input", e => { searchTerm = e.target.value; renderProducts(); });
 
-    // show all / show fewer
-    $("#showAllBtn").addEventListener("click", () => {
+    const showAllEl = $("#showAllBtn");
+    if (showAllEl) showAllEl.addEventListener("click", () => {
       showAll = !showAll;
       renderProducts();
       if (!showAll) document.getElementById("solutions").scrollIntoView({ behavior: "smooth" });

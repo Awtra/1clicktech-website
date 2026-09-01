@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/styles.css?v=4" />
+<link rel="stylesheet" href="css/styles.css?v=5" />
 </head>
 <body class="b2b">
 
@@ -79,10 +79,9 @@
     </div>
   </div>
 
-  <!-- BRAND MARQUEE -->
-  <div class="marquee reveal" aria-hidden="true">
+  <!-- CATEGORY STRIP (static, calm — single set, no duplicates) -->
+  <div class="marquee marquee--static reveal" aria-label="Hardware categories we source">
     <div class="marquee__track">
-      <span>Servers</span><span>Networking</span><span>Storage</span><span>Chromebooks</span><span>Printers &amp; Scanners</span><span>Projectors</span><span>IP Phones</span><span>IP Cameras</span><span>GPU</span><span>Receipt Printers</span><span>Laptop Accessories</span>
       <span>Servers</span><span>Networking</span><span>Storage</span><span>Chromebooks</span><span>Printers &amp; Scanners</span><span>Projectors</span><span>IP Phones</span><span>IP Cameras</span><span>GPU</span><span>Receipt Printers</span><span>Laptop Accessories</span>
     </div>
   </div>
@@ -116,36 +115,32 @@
   </div>
 </section>
 
-<!-- ░░ WHAT WE SOURCE (live catalog, B2B mode) ░░ -->
+<!-- ░░ WHAT WE SOURCE (general categories — brands & models quoted per request) ░░ -->
 <section class="catalog" id="solutions">
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow eyebrow--center"><span class="live-dot"></span> Sourcing capability</span>
       <h2 class="section-title">What we <span class="grad-text">source</span></h2>
-      <p class="section-sub">A snapshot of the hardware we regularly quote for clients. Not on the list? Our distribution relationships usually find it — ask us anyway.</p>
+      <p class="section-sub">We carry a wide range of brands and models across these categories — tell us what your project needs and we'll quote it.</p>
     </div>
 
-    <div class="catalog__toolbar reveal">
-      <div class="search-field">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="catalogSearch" placeholder="Search servers, switches, drives, cameras…" />
-      </div>
-      <div class="filter-chips" id="filterChips">
-        <button class="chip chip--filter is-active" data-cat="all">All</button>
-      </div>
+    <div class="cat-grid reveal">
+      <div class="cat-tile"><span class="cat-ico">🖥️</span><span>Servers</span><small>Tower &amp; rack, all major brands</small></div>
+      <div class="cat-tile"><span class="cat-ico">🌐</span><span>Networking</span><small>Switches, routers, cabling</small></div>
+      <div class="cat-tile"><span class="cat-ico">💾</span><span>Storage</span><small>NAS, drives, SSDs</small></div>
+      <div class="cat-tile"><span class="cat-ico">💻</span><span>Chromebooks</span><small>Business &amp; education fleets</small></div>
+      <div class="cat-tile"><span class="cat-ico">🖨️</span><span>Printers &amp; Scanners</span><small>MFPs, flatbeds, more</small></div>
+      <div class="cat-tile"><span class="cat-ico">📽️</span><span>Projectors</span><small>Classroom &amp; conference room</small></div>
+      <div class="cat-tile"><span class="cat-ico">☎️</span><span>IP Phones</span><small>VoIP desk &amp; conference</small></div>
+      <div class="cat-tile"><span class="cat-ico">📷</span><span>IP Cameras</span><small>Security &amp; surveillance</small></div>
+      <div class="cat-tile"><span class="cat-ico">🎮</span><span>GPU</span><small>Workstation &amp; gaming</small></div>
+      <div class="cat-tile"><span class="cat-ico">🧾</span><span>Receipt Printers</span><small>POS &amp; thermal</small></div>
+      <div class="cat-tile"><span class="cat-ico">🔥</span><span>Thermal Printers</span><small>Labels &amp; tickets</small></div>
+      <div class="cat-tile"><span class="cat-ico">🎒</span><span>Laptop Accessories</span><small>Bags, hubs, stands, more</small></div>
     </div>
 
-    <div class="product-grid is-collapsed" id="productGrid" aria-live="polite">
-      <!-- Skeletons injected by JS, then real cards -->
-    </div>
-
-    <div class="catalog__more">
-      <button class="btn btn--ghost" id="showAllBtn" hidden>Show all categories ↓</button>
-    </div>
-
-    <p class="catalog__empty" id="catalogEmpty" hidden>Nothing matches that search — but our supplier network is wider than this page. Send us the part number in the quote form below.</p>
     <div class="catalog__sourcing-note reveal">
-      <p><strong>Need something you don't see?</strong> This page shows representative inventory — our sourcing network goes well beyond it. Send us part numbers, quantities, and your timeline, and we'll come back with options.</p>
+      <p><strong>Need something you don't see?</strong> Our sourcing network goes well beyond this list. Send us part numbers, quantities, and your timeline, and we'll come back with options.</p>
       <a href="#contact" class="btn btn--accent">Ask Us to Source It →</a>
     </div>
   </div>
@@ -174,7 +169,7 @@
       <article class="step">
         <span class="step__num">03</span>
         <h3>We ship &amp; support</h3>
-        <p>Hardware ships tested and warrantied, typically in 2–5 days. And after the order, we're still easy to reach.</p>
+        <p>Hardware ships factory sealed and warrantied, typically in 2–5 days. And after the order, we're still easy to reach.</p>
       </article>
     </div>
   </div>
@@ -336,7 +331,7 @@
     <div class="footer__col footer__col--wide">
       <h4>Talk to us</h4>
       <p>Sourcing a project or need a hard-to-find part? Reach out — a real person answers.</p>
-      <p class="footer__contact-lines"><a href="tel:+14842218279">📞 +1 (484) 221-8279</a><br>6801 W Tilghman St, Unit 108 · Allentown, PA 18106<br><a href="mailto:sales@1clktech.com">✉️ sales@1clktech.com</a></p>
+      <p class="footer__contact-lines"><a href="tel:+148****8279">📞 +1 (484) 221-8279</a><br>6801 W Tilghman St, Unit 122 · Allentown, PA 18106<br><a href="mailto:sales@1clktech.com">✉️ sales@1clktech.com</a></p>
     </div>
   </div>
   <div class="footer__bar wrap">
@@ -351,7 +346,7 @@
 <!-- ░░ BACK TO TOP ░░ -->
 <button class="to-top" id="toTop" aria-label="Back to top">↑</button>
 
-<script src="js/config.js?v=4"></script>
-<script src="js/app.js?v=4"></script>
+<script src="js/config.js?v=5"></script>
+<script src="js/app.js?v=5"></script>
 </body>
 </html>
