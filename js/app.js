@@ -401,8 +401,16 @@
   function initTawk() {
     const code = (CFG.TAWK_WIDGET_CODE || "").trim();
     if (!code) return;                        // not configured → no chat button
+    // The pasted widget code contains s1.src='https://embed.tawk.to/...'
+    // innerHTML never executes <script> tags, so extract the src and
+    // inject a real script element instead.
+    const m = code.match(/s1\.src\s*=\s*['"]([^'"]+)['"]/);
+    if (!m) return;
     const s = document.createElement("script");
-    s.innerHTML = code;                       // the pasted widget <script> body
+    s.async = true;
+    s.src = m[1];
+    s.charset = "UTF-8";
+    s.setAttribute("crossorigin", "*");
     document.head.appendChild(s);
   }
 
@@ -411,7 +419,18 @@
      filename; add entries as the client sends photos. Missing entries
      simply leave the card as-is. */
   const CAT_IMAGES = {
-    /* "Servers":          "assets/products/servers.jpg",   // ← example */
+    "Servers":            "assets/products/servers.jpg",
+    "Networking":         "assets/products/networking.jpg",
+    "Storage":            "assets/products/storage.jpg",
+    "Chromebooks":        "assets/products/chromebook.jpg",
+    "Printers & Scanners":"assets/products/printers-scanners.jpg",
+    "Projectors":         "assets/products/projectors.jpg",
+    "IP Phones":          "assets/products/ip-phone.jpg",
+    "IP Cameras":         "assets/products/ip-camera.jpg",
+    "GPU":                "assets/products/gpu.jpg",
+    "Receipt Printers":   "assets/products/receipt-printer.jpg",
+    "Thermal Printers":   "assets/products/thermal-printer.jpg",
+    "Laptop Accessories": "assets/products/laptop-accessories.jpg",
   };
   function initCatImages() {
     document.querySelectorAll(".cat-tile").forEach(tile => {
