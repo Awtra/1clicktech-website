@@ -382,10 +382,12 @@
     initMarquee();
     initCursor();
     initGoogleReviews();
+    initTawk();
+    initCatImages();
   }
 
-  /* Google Reviews widget: inject the Trustindex/Elfsight embed only when
-     configured; the whole band stays hidden otherwise. */
+  /* Tawk.to live chat: injects the widget script only when a widget code is
+     configured in config.js. No config = no chat button, no errors. */
   function initGoogleReviews() {
     const band = $("#googleReviews");
     const slot = $("#googleReviewWidget");
@@ -394,6 +396,36 @@
     if (!embed) return;                       // not configured → band remains hidden
     slot.innerHTML = embed;
     band.hidden = false;
+  }
+
+  function initTawk() {
+    const code = (CFG.TAWK_WIDGET_CODE || "").trim();
+    if (!code) return;                        // not configured → no chat button
+    const s = document.createElement("script");
+    s.innerHTML = code;                       // the pasted widget <script> body
+    document.head.appendChild(s);
+  }
+
+  /* Category-card hover images (B2B): each card gets a subtle product
+     backdrop on hover (desktop) / tint (mobile). Map category → image
+     filename; add entries as the client sends photos. Missing entries
+     simply leave the card as-is. */
+  const CAT_IMAGES = {
+    /* "Servers":          "assets/products/servers.jpg",   // ← example */
+  };
+  function initCatImages() {
+    document.querySelectorAll(".cat-tile").forEach(tile => {
+      const name = tile.querySelector("span:not(.cat-ico)");
+      if (!name) return;
+      const img = CAT_IMAGES[name.textContent.trim()];
+      if (!img) return;
+      const el = document.createElement("img");
+      el.className = "cat-img";
+      el.src = img;
+      el.alt = "";
+      el.loading = "lazy";
+      tile.appendChild(el);
+    });
   }
 
   function countUp(el) {

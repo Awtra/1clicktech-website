@@ -335,7 +335,14 @@ section{position:relative;padding:clamp(3.5rem,7vw,6.5rem) 0}
 .catalog__empty{text-align:center;color:var(--muted-lt);padding:2rem;font-size:1.05rem}
 .catalog__powered{text-align:center;color:var(--muted);font-size:.88rem;margin-top:2.2rem;padding-top:1.6rem;border-top:1px solid var(--line)}
 
-/* ---------- CATEGORIES ---------- */
+/* ---------- CATEGORY CARD HOVER IMAGE (B2B) ---------- */
+.cat-tile{position:relative;overflow:hidden;min-height:86px}
+.cat-tile .cat-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.08);transition:opacity .45s ease,transform .6s ease;z-index:0}
+.cat-tile:hover .cat-img{opacity:.28;transform:scale(1.02)}
+.cat-tile .cat-ico,.cat-tile span:not(.cat-ico),.cat-tile small{position:relative;z-index:1}
+@media(hover:none){
+  .cat-tile .cat-img{opacity:.12} /* mobile: subtle tint instead of hover */
+}
 /* flex + center: any partial final row centers instead of hugging left */
 .cat-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem}
 .cat-tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.6rem 1.2rem;text-align:center;

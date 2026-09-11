@@ -70,6 +70,19 @@ window.SITE_CONFIG = {
   FORMSPREE_ENDPOINT: "",         // <-- paste your Formspree endpoint here
 
   /* ---------------------------------------------------------
+     LIVE CHAT (Tawk.to)
+     ---------------------------------------------------------
+     1. Go to https://tawk.to and create a free account.
+     2. In the dashboard: Admin → Chat Widget → copy the
+        "Widget Code" (a <script> tag containing a property ID).
+     3. Paste the whole <script> tag below between the backticks.
+     Done — a chat bubble appears bottom-right on desktop + mobile,
+     and conversations land in the Tawk.to app (or your inbox).
+     Leave empty ("") and no chat button shows.
+  --------------------------------------------------------- */
+  TAWK_WIDGET_CODE: ``,
+
+  /* ---------------------------------------------------------
      FALLBACK / SAMPLE CATALOG
      Used when SHEET_CSV_URL is empty, or if the sheet ever
      fails to load (so the sourcing list is never blank).
