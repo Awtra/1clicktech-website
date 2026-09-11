@@ -325,14 +325,16 @@
       if (!showAll) document.getElementById("solutions").scrollIntoView({ behavior: "smooth" });
     });
 
-    // quote form → email via Formspree (see config.js to connect)
+    // quote form → email (FormSubmit.co when FORM_EMAIL set, else Formspree endpoint)
     const qf = $("#quoteForm");
     if (qf) qf.addEventListener("submit", async e => {
       e.preventDefault();
       const btn = qf.querySelector("button[type=submit]");
-      const endpoint = (CFG.FORMSPREE_ENDPOINT || "").trim();
+      const email = (CFG.FORM_EMAIL || "").trim();
+      const spree = (CFG.FORMSPREE_ENDPOINT || "").trim();
+      const endpoint = spree || (email ? `https://formsubmit.co/${encodeURIComponent(email)}` : "");
 
-      // No endpoint configured → friendly demo mode (nothing is sent)
+      // Nothing configured → friendly demo mode (nothing is sent)
       if (!endpoint) {
         toast("Form is in preview mode — connect it in js/config.js to receive emails.", "ℹ️");
         return;
@@ -346,7 +348,7 @@
         const data = new FormData(qf);
         data.append("_subject", "New quote request — 1ClickTech website");
         data.append("_template", "table");     // nicely formatted email
-        data.append("_captcha", "false");      // Formspree bot filter handles spam
+        data.append("_captcha", "false");      // works for both providers
         const res = await fetch(endpoint, {
           method: "POST",
           body: data,
@@ -360,7 +362,7 @@
           toast((err.errors || []).map(x => x.message).join(" ") || "Something went wrong — please call us instead.", "⚠️");
         }
       } catch (err) {
-        toast("Couldn't reach the form service — please call +1 (484) 221-8279.", "⚠️");
+        toast("Couldn't reach the form service — please call +1 (610) 570-3862.", "⚠️");
       } finally {
         btn.disabled = false;
         btn.innerHTML = orig;

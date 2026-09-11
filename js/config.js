@@ -56,18 +56,25 @@ window.SITE_CONFIG = {
   CURRENCY: "$",
 
   /* ---------------------------------------------------------
-     QUOTE FORM → EMAIL (Formspree)
+     QUOTE FORM → EMAIL (FormSubmit.co)
      ---------------------------------------------------------
-     1. Go to https://formspree.io and sign up (free: 50 submissions/mo).
-     2. New Form → name it e.g. "Quote Requests" → set the send-to
-        email (sales@1clktech.com) → confirm the email they send you.
-     3. Copy your form's endpoint, e.g. https://formspree.io/f/xwpekqjr
-     4. Paste it below. Done — every quote request now lands in the inbox.
+     The form sends directly to the inbox below — no account
+     needed. Just set the address you want submissions to go to.
 
-     Leave it empty ("") and the form shows a friendly demo message
-     instead of sending anything.
+     ⚠️ ONE-TIME ACTIVATION: after this is live, submit the form
+     once → FormSubmit sends an activation email to the address
+     below → click "Activate" in that email. After that, every
+     quote request lands in the inbox (check spam if it's slow).
+     --------------------------------------------------------- */
+  FORM_EMAIL: "farhana@1clktech.com",    // <-- quote requests go here
+
+  /* ---------------------------------------------------------
+     FORMSPREE ALTERNATIVE (optional)
+     Prefer Formspree? Create a free form at https://formspree.io
+     and paste its endpoint here instead. Leave "" to use the
+     FormSubmit.co address above.
   --------------------------------------------------------- */
-  FORMSPREE_ENDPOINT: "",         // <-- paste your Formspree endpoint here
+  FORMSPREE_ENDPOINT: "",
 
   /* ---------------------------------------------------------
      LIVE CHAT (Tawk.to)
