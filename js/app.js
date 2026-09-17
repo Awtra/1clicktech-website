@@ -433,7 +433,8 @@
     "Receipt Printers":   "assets/products/receipt-printer.jpg",
     "Thermal Printers":   "assets/products/thermal-printer.jpg",
     "Laptop Accessories": "assets/products/laptop-accessories.jpg",
-  };
+        "Flash Sale":         "assets/products/flash-sale.jpg",
+      };
   function initCatImages() {
     document.querySelectorAll(".cat-tile").forEach(tile => {
       const name = tile.querySelector("span:not(.cat-ico)");
